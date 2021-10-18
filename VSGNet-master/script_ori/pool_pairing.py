@@ -107,7 +107,7 @@ def pairing(pers, objs, context, spatial_locs, pairs_info):
             for ind_o, j in enumerate(batch_objs):
                 sp_features = extract_spatial(sp_locs_pers_batch[ind_p], sp_locs_objs_batch[ind_o])
                 pers_objs.append(torch.cat([i, j, sp_features], 0))
-            # pers_objs.append(torch.cat([i,j],0))
+                # pers_objs.append(torch.cat([i,j],0))
 
         pers_objs_batch = torch.stack(pers_objs)
 

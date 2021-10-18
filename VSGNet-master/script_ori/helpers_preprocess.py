@@ -9,7 +9,6 @@ with open('../infos/directory.json') as fp: all_data_dir = json.load(fp)
 ANN_FILE_train = all_data_dir + 'Annotations_vcoco/train_annotations.json'
 ANN_FILE_val = all_data_dir + 'Annotations_vcoco/val_annotations.json'
 ANN_FILE_test = all_data_dir + 'Annotations_vcoco/test_annotations.json'
-# ANN_FILE_test = '/home/aryoung/NRF/Pyhome/homeProj/hoiOntoV1/data/test_Pair2/test_point-motorcycle.json'
 with open(ANN_FILE_train) as fp:
     ANNOTATIONS_train = json.load(fp)
 with open(ANN_FILE_test) as fp:
@@ -61,15 +60,14 @@ def get_detections(segment_key, flag):
         cur_obj_path_s = OBJ_PATH_train_s + "COCO_train2014_%.12i.json" % (segment_key)
         SCORE_TH = 0.6
         SCORE_OBJ = 0.3
-        select_threshold = 2000000
 
+        select_threshold = 2000000
     elif flag == 'test':
         annotation = ANNOTATIONS_test[str(segment_key)]
         cur_obj_path_s = OBJ_PATH_test_s + "COCO_val2014_%.12i.json" % (segment_key)
         SCORE_TH = 0.6
         SCORE_OBJ = 0.3
         select_threshold = 2000000
-
     elif flag == 'val':
         annotation = ANNOTATIONS_val[str(segment_key)]
         cur_obj_path_s = OBJ_PATH_train_s + "COCO_train2014_%.12i.json" % (segment_key)
@@ -96,7 +94,6 @@ def get_detections(segment_key, flag):
                                                                                          0:select_threshold - 1], class_id_objects[
                                                                                                                   0:select_threshold - 1]
     scores_objects.insert(0, 1)
-
     return d_p_boxes, d_o_boxes, scores_persons, scores_objects, class_id_humans, class_id_objects, annotation, shape
 
 
@@ -143,7 +140,6 @@ def get_compact_label(segment_key, flag):
     labels_np = np.zeros([no_person_dets, no_object_dets + 1, NO_VERBS], np.int32)
 
     a_p_boxes = [ann['person_box'] for ann in annotation]
-    # print(annotation)
     iou_mtx = get_iou_mtx(a_p_boxes, d_p_boxes)
 
     if no_person_dets != 0 and len(a_p_boxes) != 0:
@@ -328,22 +324,26 @@ def dry_run():
     print("Doing a test run to detect bad detections\n")
 
     for segkey in (ALL_SEGS_train):
-
         if get_bad_detections(segkey, "train"):
             bad_detections_train.append(segkey)
+
     print("In training set object detector failed to detect any person in the following images:\n{}".format(
         bad_detections_train))
 
     for segkey in (ALL_SEGS_val):
         if get_bad_detections(segkey, "val"):
             bad_detections_val.append(segkey)
+
     print("In validation set object detector failed to detect any person in the following images:\n{}".format(
         bad_detections_val))
+
     for segkey in (ALL_SEGS_test):
         if get_bad_detections(segkey, "test"):
             bad_detections_test.append(segkey)
+
     print("In testing set object detector failed to detect any person in the following images:\n{}".format(
         bad_detections_test))
+
     return bad_detections_train, bad_detections_val, bad_detections_test
 
 

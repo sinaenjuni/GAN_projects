@@ -64,7 +64,6 @@ def visual(image_id, flag, pairs_info, score_HOI, score_interact, score_obj_box,
         this_batch_pers = int(pairs_info[batch][0])
         this_batch_objs = int(pairs_info[batch][1])
         increment = this_batch_pers * this_batch_objs
-        print(this_batch_pers,this_batch_objs, increment)
         ground_truth_this_batch = ground_truth[start:start + increment]
         score_HOI_this_batch = score_HOI[start:start + increment]
         start += increment
@@ -93,14 +92,7 @@ def visual(image_id, flag, pairs_info, score_HOI, score_interact, score_obj_box,
             for object_box in obj_bbx:
                 ground_truth_this_sample = ground_truth_this_batch[start_index]
                 score_HOI_this_sample = score_HOI_this_batch[start_index]
-                # print(score_HOI_this_sample)
-                # print(np.argsort(score_HOI_this_sample))
-                # print(np.argsort(score_HOI_this_sample)[-5:])
-                # print(np.argsort(score_HOI_this_sample)[-5:][::-1])
-                # np.argsort 작은 값부터 순서대로 데이터의 index를 반환해줌
-                for ind in np.argsort(score_HOI_this_sample)[-5:][::-1]:
-                    print(ind, score_HOI_this_sample[ind])
-                    print('score_smp', "%.2f" % score_HOI_this_sample[ind])
+                print(score_HOI_this_sample)
                 pred = [('GROUND_TRUTH', [(ID2VERB[ind], float("%.2f" % ground_truth_this_sample[ind])) for ind in
                                           np.argsort(ground_truth_this_sample)[-5:][::-1]])]
                 pred.append(('TOTAL_PREDICTION', [(ID2VERB[ind], float("%.2f" % score_HOI_this_sample[ind])) for ind in
@@ -121,14 +113,12 @@ def visual(image_id, flag, pairs_info, score_HOI, score_interact, score_obj_box,
                 start_index += 1
                 k = cv2.waitKey(0)
                 if k == 27:  # wait for ESC key to exit
-
                     cv2.destroyAllWindows()
 
             if k == 27:  # wait for ESC key to exit
-
                 cv2.destroyAllWindows()
-        if k == 27:  # wait for ESC key to exit
 
+        if k == 27:  # wait for ESC key to exit
             cv2.destroyAllWindows()
 
     cv2.destroyAllWindows()

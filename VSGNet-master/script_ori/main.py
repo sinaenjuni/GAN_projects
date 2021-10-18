@@ -19,11 +19,7 @@ from train_test import train_test
 import model as rr
 import random
 
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-
 device = torch.device("cuda")
-#device = torch.device("cuda:0" if torch.cuda.is_available() else "cuda:1")
 
 seed = 10
 torch.manual_seed(seed)
@@ -88,7 +84,6 @@ annotation_val = all_data_dir + 'Annotations_vcoco/val_annotations.json'
 image_dir_val = all_data_dir + 'Data_vcoco/train2014/'
 
 annotation_test = all_data_dir + 'Annotations_vcoco/test_annotations.json'
-#annotation_test = '/home/aryoung/NRF/Pyhome/homeProj/hoiOntoV1/data/test_Pair2/test_point-motorcycle.json'
 image_dir_test = all_data_dir + 'Data_vcoco/val2014/'
 
 vcoco_train = vcoco_Dataset(annotation_train, image_dir_train,
@@ -121,6 +116,7 @@ trainables = []
 not_trainables = []
 spmap = []
 single = []
+
 for name, p in res.named_parameters():
     if name.split('.')[0] == 'Conv_pretrain':
         p.requires_grad = False
@@ -140,12 +136,6 @@ lambda2 = lambda epoch: 1
 lambda3 = lambda epoch: 1
 scheduler = optim.lr_scheduler.LambdaLR(optim1, [lambda1, lambda2])
 
-# if torch.cuda.device_count() > 1:
-#     print("Let's use", torch.cuda.device_count(), "GPUs!")
-#     # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
-#     # model = nn.DataParallel(model)
-#     res = nn.DataParallel(res)
-# res.to(device)
 res = nn.DataParallel(res)
 res.to(device)
 
@@ -155,7 +145,7 @@ mean_best = 0
 if resume_model == 't':
     try:
         # import pdb;pdb.set_trace()
-        checkpoint = torch.load(folder_name + '/' + check + 'checkpoint.pth.tar')
+        checkpoint = torch.load(folder_name + '/' + check + 'checkpoint.pth.tar', encoding='latin1')
         res.load_state_dict(checkpoint['state_dict'], strict=True)
         epoch = checkpoint['epoch']
         mean_best = checkpoint['mean_best']
@@ -173,3 +163,4 @@ if hyp == 't':
 
 train_test(res, optim1, scheduler, dataloader, number_of_epochs, breaking_point, saving_epoch, folder_name, batch_size,
            infr, epoch, mean_best, visualize)
+

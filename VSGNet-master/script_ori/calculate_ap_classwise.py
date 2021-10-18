@@ -1,13 +1,12 @@
 #### This script will calculate AP per classwise without considering bounding boxes precision. This can be used to have a sanity check on the learnt model###
 
-from sklearn.metrics import average_precision_score, precision_recall_curve
+from sklearn.metrics import average_precision_score
 from sklearn.metrics import classification_report
 import pandas as pd
 import torch
 import numpy as np
 import os
 import random
-import matplotlib.pyplot as plot
 
 NO_VERBS = 29
 VERBS_NO_COCO = 80
@@ -37,32 +36,15 @@ def class_AP(*args):
     predicted_single_class = args[2]
     true_single_class = args[3]
     mean = 0
-    #print('true_score : ', true_score)
     for k in range(NO_VERBS):
         if VERB2ID[k]:
             predicted = predicted_score[:, k]
-            #print('pred : ',predicted)
             true = true_score[:, k]
-            #print('true : ',true)
+
             try:
                 AP_s = average_precision_score(true, predicted) * 100
-                # print(average_precision_score(true, predicted), AP_s)
-                # if k == 14:
-                #     Precision, Recall, _ = precision_recall_curve(true, predicted)
-                #     print(Precision, Recall)
-                #     plot.title("Precision-Recall Graph")
-                #     plot.xlabel("Recall")
-                #     plot.ylabel("Precision")
-                #     plot.plot(Recall, Precision, "b",
-                #             label="Model A (AP = %0.2F)" % AP_s)
-                #     plot.legend(loc="upper right")
-                #     plot.show()
-                #     for pred in predicted:
-                #         print("%.16f" % pred)
-
             except:
-
-                import pdb;
+                import pdb
                 pdb.set_trace()
 
             mean += AP_s

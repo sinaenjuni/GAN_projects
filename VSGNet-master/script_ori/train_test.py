@@ -173,6 +173,8 @@ def train_test(model, optimizer, scheduler, dataloader, number_of_epochs, break_
             print('Only showing predictions from a model')
     else:
         end_of_epochs = start_epoch + number_of_epochs
+
+
     ##### Starting the Epochs#############
     for epoch in range(start_epoch, end_of_epochs):
         scheduler.step()

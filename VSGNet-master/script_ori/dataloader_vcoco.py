@@ -25,7 +25,7 @@ def vcoco_collate(batch):
     for index, item in enumerate(batch):
         image.append(item['image'])
         image_id.append(torch.tensor(int(item['image_id'])))
-        pairs_info.append(torch.tensor(np.shape(item['labels_all'])))       # det person(4)에 대한 obj(10)와의 verb
+        pairs_info.append(torch.tensor(np.shape(item['labels_all'])))
         tot_HOI = int(np.shape(item['labels_single'])[0])
         labels_all.append(torch.tensor(item['labels_all'].reshape(tot_HOI, NO_VERB)))
         labels_single.append(torch.tensor(item['labels_single']))
@@ -34,13 +34,11 @@ def vcoco_collate(batch):
 
 
 class Rescale(object):
-
     def __init__(self, output_size):
         assert isinstance(output_size, (int, tuple))
         self.output_size = output_size
 
     def __call__(self, image):
-
         h, w = image.shape[:2]
         if isinstance(self.output_size, int):
             if h > w:
@@ -58,10 +56,8 @@ class Rescale(object):
 
 class ToTensor(object):
     """Convert ndarrays in sample to Tensors."""
-
     def __call__(self, image):
         image = image.transpose((2, 0, 1))
-
         return torch.from_numpy(image).float()
 
 
