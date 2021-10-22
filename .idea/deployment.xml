@@ -5,7 +5,7 @@
       <paths name="sin@168.188.125.197:22">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/sin/git/GAN_project" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/sin/git/GAN_project/VSGNet-master" local="$PROJECT_DIR$/VSGNet-master" web="/" />
           </mappings>
         </serverdata>
       </paths>

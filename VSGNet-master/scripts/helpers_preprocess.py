@@ -138,25 +138,39 @@ def get_compact_label(segment_key, flag):
     d_p_boxes, d_o_boxes, scores_persons, scores_objects, class_id_humans, class_id_objects, annotation, shape = get_detections(
         segment_key, flag)
 
+    # print(d_p_boxes, d_o_boxes, scores_persons, scores_objects, class_id_humans, class_id_objects, annotation, shape, sep='\n')
+
     no_person_dets = len(d_p_boxes)
     no_object_dets = len(d_o_boxes)
     labels_np = np.zeros([no_person_dets, no_object_dets + 1, NO_VERBS], np.int32)
 
+    # print('labels_np', labels_np)
+    # print(labels_np.shape)
+
+    # return
+
     a_p_boxes = [ann['person_box'] for ann in annotation]
-    # print(annotation)
+    # print(a_p_boxes)
     iou_mtx = get_iou_mtx(a_p_boxes, d_p_boxes)
+    # print('iou_mtx', iou_mtx)
+    # print('iou_mtx', iou_mtx.shape)
 
     if no_person_dets != 0 and len(a_p_boxes) != 0:
         max_iou_for_each_det = np.max(iou_mtx, axis=0)
         index_for_each_det = np.argmax(iou_mtx, axis=0)
-        for dd in range(no_person_dets):
+
+        for dd in range(no_person_dets): # 몇 번 째 person인
             cur_max_iou = max_iou_for_each_det[dd]
             if cur_max_iou < MATCHING_IOU:
                 continue
             matched_ann = annotation[index_for_each_det[dd]]
             hoi_anns = matched_ann['hois']
+            # print(hoi_anns)
+            # [{'verb': 'kick', 'obj_box': [207, 238, 254, 287]}, {'verb': 'look', 'obj_box': [207, 238, 254, 287]}, {'verb': 'run', 'obj_box': []}, {'verb': 'smile', 'obj_box': []}, {'verb': 'stand', 'obj_box': []}]
+
             # Verbs with no actions####
             noobject_hois = [oi for oi in hoi_anns if len(oi['obj_box']) == 0]
+            # print(noobject_hois)
 
             for no_hoi in noobject_hois:
                 verb_idx = VERB2ID[no_hoi['verb']]
@@ -164,9 +178,11 @@ def get_compact_label(segment_key, flag):
 
             # verbs with actions######
             object_hois = [oi for oi in hoi_anns if len(oi['obj_box']) != 0]
+            # print(object_hois)
 
             a_o_boxes = [oi['obj_box'] for oi in object_hois]
             iou_mtx_o = get_iou_mtx(a_o_boxes, d_o_boxes)
+            # print(iou_mtx_o)
 
             if a_o_boxes and d_o_boxes:
                 for do in range(len(d_o_boxes)):
@@ -176,8 +192,15 @@ def get_compact_label(segment_key, flag):
                         if cur_iou < MATCHING_IOU:
                             continue
                         current_hoi = object_hois[ao]
+                        # print('current_hoi',current_hoi)
                         verb_idx = VERB2ID[current_hoi['verb']]
+                        # print(verb_idx)
+                        # return
                         labels_np[dd, do + 1, verb_idx] = 1  # +1 because 0 is no object
+        # print(labels_np.shape)
+
+        # return
+
 
         comp_labels = labels_np.reshape(no_person_dets * (no_object_dets + 1), NO_VERBS)
         labels_single = np.array([1 if i.any() == True else 0 for i in comp_labels])

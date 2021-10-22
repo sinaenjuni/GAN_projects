@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteMappingsManager">
+    <list>
+      <list>
+        <remote-mappings server-id="python@sftp://sin@168.188.125.197:22/home/sin/.conda/envs/instagan/bin/python3.6">
+          <settings>
+            <list>
+              <mapping local-root="$PROJECT_DIR$/VSGNet-master" remote-root="/home/sin/git/GAN_project/VSGNet-master" />
+            </list>
+          </settings>
+        </remote-mappings>
+      </list>
+    </list>
+  </component>
+</project>
