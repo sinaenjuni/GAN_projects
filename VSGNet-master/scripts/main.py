@@ -20,7 +20,7 @@ import model as rr
 import random
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1"
 
 device = torch.device("cuda")
 #device = torch.device("cuda:0" if torch.cuda.is_available() else "cuda:1")
